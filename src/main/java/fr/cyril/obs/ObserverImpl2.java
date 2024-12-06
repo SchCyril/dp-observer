@@ -6,18 +6,13 @@ import java.util.List;
 public class ObserverImpl2 implements Observer {
     private List<Integer> history = new ArrayList<>();
     @Override
-    public void update(int state) {
-        if(state instanceof ObservableImpl) {
-            int state = ((ObservableImpl) state).getState();
-            System.out.println("------obs 2-------");
-            history.add(state);
-            double sum = 0;
-            for(Integer s : history) {
-                sum= sum + s;
-
-            }
-            System.out.println("stage avg = " + (sum/history.size()));
+    public void update(int newState) {
+        history.add(newState);
+        double sum = 0;
+        for (Integer i : history) {
+            sum += history.get(i);
         }
+        System.out.println("Moyenne = " +sum/history.size());
 
     }
 }
