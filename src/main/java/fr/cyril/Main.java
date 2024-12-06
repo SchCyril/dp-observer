@@ -2,28 +2,62 @@ package fr.cyril;
 
 import fr.cyril.obs.*;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class Main {
     public static void main(String[] args) {
         ObservableImpl observable = new ObservableImpl();
         Observer observer1 = new ObserverImpl1();
+        Observer observer2 = new ObserverImpl2();
         observable.subscribe(observer1);
-        observable.subscribe(new ObserverImpl2());
-        observable.setState(70);
-        observable.setState(85);
-        observable.setState(100);
-        observable.setState(54);
-        observable.setState(74);
-        observable.unsubscribe(observer1);
-        System.out.println("..............");
-        observable.setState(44);
-        observable.setState(34);
+        observable.subscribe(observer2);
 
-        observable.subscribe(state -> {
-            System.out.println("=============");
-            System.out.println("prévision = " + Math.cos(state*2)*Math.log(state*state));
+
+        // PUSH
+        /*observable.subscribe(state -> {
+            System.out.println("+++++++++++ Obs 3 +++++++++++");
+            System.out.println("Res = " + state * Math.cos(state));
+        });*/
+
+        //PULL
+        observable.subscribe(new Observer() {
+                                 @Override
+                                 public void update(Observable o) {
+                                     if (o instanceof ObservableImpl obs) {
+                                         System.out.println("+++++++++++ Obs 3 +++++++++++");
+                                         System.out.println("Res = " + ((ObservableImpl) o).getState() * Math.cos(((ObservableImpl) o).getState()));
+                                         System.out.println("+++++++++++ Obs 3 +++++++++++");
+                                     }
+                                 }
+                             }
+        );
+
+        // PULL Lambda
+        observable.subscribe(obs -> {
+            if (obs instanceof ObservableImpl o) {
+                System.out.println("+++++++++++ Obs 3 +++++++++++");
+                System.out.println("Res = " + o.getState() * Math.cos(o.getState()));
+                System.out.println("+++++++++++ Obs 3 +++++++++++");
+            }
         });
 
-        observable.setState(65);
+        observable.setState(60);
+        observable.setState(30);
+
+        observable.unsubscribe(observer2);
+        observable.setState(40);
+
 
     }
+
+
+
+
+
+
+
+
+
 }
+
